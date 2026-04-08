@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef, useState } from "react"
+import { useRef, useState, useEffect } from "react"
 import { SectionBridge } from "@/components/section-bridge"
 
 const VIDEOS = [
@@ -8,11 +8,13 @@ const VIDEOS = [
     src: "/videos/nohospital.mp4",
     label: "Conheça o centro cirúrgico",
     description: "Hospital de referência com infraestrutura completa para sua segurança.",
+    autoplayMobile: false,
   },
   {
     src: "/videos/nohospitalatendimento.mp4",
     label: "A experiência do atendimento",
     description: "Acolhimento humanizado do primeiro contato ao pós-operatório.",
+    autoplayMobile: true,
   },
 ]
 
@@ -27,6 +29,20 @@ function PlayIcon() {
 function VideoCard({ video }: { video: (typeof VIDEOS)[number] }) {
   const ref = useRef<HTMLVideoElement>(null)
   const [playing, setPlaying] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    setIsMobile(window.innerWidth < 640)
+  }, [])
+
+  const shouldAutoplay = video.autoplayMobile && isMobile
+
+  useEffect(() => {
+    if (shouldAutoplay && ref.current) {
+      ref.current.play().catch(() => {})
+      setPlaying(true)
+    }
+  }, [shouldAutoplay])
 
   const toggle = () => {
     const el = ref.current
@@ -48,11 +64,13 @@ function VideoCard({ video }: { video: (typeof VIDEOS)[number] }) {
       >
         <video
           ref={ref}
-          src={video.src}
+          src={`${video.src}#t=0.5`}
           playsInline
           preload="metadata"
+          muted={shouldAutoplay}
+          loop={shouldAutoplay}
           className="absolute inset-0 w-full h-full object-cover"
-          onEnded={() => setPlaying(false)}
+          onEnded={() => { if (!shouldAutoplay) setPlaying(false) }}
         />
         {!playing && (
           <div className="absolute inset-0 bg-black/30 flex items-center justify-center transition-opacity">
