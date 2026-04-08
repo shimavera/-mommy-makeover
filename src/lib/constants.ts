@@ -14,6 +14,7 @@ export const CONTACT = {
   whatsappAgenda:
     "https://wa.me/5511952136738?text=Ol%C3%A1%2C+vim+pelo+site+e+gostaria+de+agendar+minha+consulta+de+Mommy+Makeover!",
   instagram: "https://www.instagram.com/smart.plastica/",
+  facebook: "https://www.facebook.com/smart.plastica/",
 }
 
 export const ADDRESS = {
